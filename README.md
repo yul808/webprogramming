@@ -1,7 +1,7 @@
-# webprogramming (Readme)
+# webprogramming Readme
 
-## landingpage (Readme)
+## landingpage Readme
 
-### assignments: (Readme)
+### assignments: Readme
 - [assignment1](https://yul808.github.io/webprogramming/assignments/assignment1)
 - 
