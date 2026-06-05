@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Press — Vol. XII</title>
+  <link rel="stylesheet" href="assignment2.css" />
+  <style>
+    /* ── NAV ── */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.5rem 0;
+      border-bottom: 2px solid var(--text);
+      margin-bottom: 3rem;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 100;
+    }
+
+    .nav__brand {
+      font-size: 1.3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text);
+      border-bottom: none;
+    }
+
+    .nav__links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      margin: 0;
+    }
+
+    .nav__links a {
+      font-size: 0.82rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 2rem;
+      min-height: 300px;
+      margin-bottom: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* large decorative numeral */
+    .hero::before {
+      content: "XII";
+      position: absolute;
+      top: -0.1em;
+      right: -0.04em;
+      font-size: 13rem;
+      font-family: var(--font-main);
+      color: var(--paper-shadow);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .hero__content {
+      position: relative;
+      z-index: 1;
+      max-width: 55%;
+    }
+
+    .hero__meta {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--faded);
+      margin-bottom: 0.8rem;
+    }
+
+    .hero__title {
+      font-size: 3.2rem;
+      line-height: 1.1;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 1.2rem;
+      border-bottom: none;
+    }
+
+    .hero__title span { color: var(--accent); }
+
+    .hero__excerpt {
+      max-width: 40ch;
+      color: var(--faded);
+      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+    }
+
+    /* faux photograph placeholder */
+    .hero__image {
+      position: relative;
+      z-index: 1;
+      width: 260px;
+      height: 290px;
+      flex-shrink: 0;
+      background:
+        repeating-linear-gradient(0deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 4px),
+        linear-gradient(135deg, #c9b89a 0%, #a5906f 60%, #7a6045 100%);
+      border: 3px solid var(--text);
+      box-shadow: 8px 8px 0 var(--paper-shadow);
+      display: flex;
+      align-items: flex-end;
+      padding: 0.7rem;
+    }
+
+    .hero__image span {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.65);
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--paper-shadow);
+      margin: 3rem 0;
+      position: relative;
+    }
+
+    .divider::after {
+      content: "✦";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--bg);
+      padding: 0 0.8rem;
+      color: var(--faded);
+      font-size: 0.7rem;
+    }
+
+    /* ── ARTICLES GRID ── */
+    .articles {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 2.5rem;
+      margin-bottom: 4rem;
+      align-items: start;
+    }
+
+    .card {
+      border-top: 2px solid var(--text);
+      padding-top: 1rem;
+    }
+
+    .card__tag {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
+
+    .card__title {
+      font-size: 1.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      line-height: 1.2;
+      margin: 0 0 0.8rem;
+    }
+
+    .card--lead .card__title { font-size: 1.7rem; }
+
+    .card__body {
+      color: var(--faded);
+      font-size: 0.92rem;
+      margin-bottom: 1rem;
+    }
+
+    .card__footer {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--faded);
+      border-top: 1px dashed var(--paper-shadow);
+      padding-top: 0.7rem;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      border-top: 2px solid var(--text);
+      padding: 2rem 0 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 2rem;
+    }
+
+    .footer__brand {
+      font-size: 1.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 0.3rem;
+    }
+
+    .footer__note {
+      font-size: 0.78rem;
+      color: var(--faded);
+      margin: 0;
+    }
+
+    .footer__copy {
+      font-size: 0.72rem;
+      color: var(--faded);
+      letter-spacing: 0.08em;
+      text-align: right;
+      align-self: flex-end;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="#" class="nav__brand">The&nbsp;Press&nbsp;<span class="cursor"></span></a>
+    <ul class="nav__links">
+      <li><a href="#">World</a></li>
+      <li><a href="#">Culture</a></li>
+      <li><a href="#">Science</a></li>
+      <li><a href="#">Opinion</a></li>
+    </ul>
+    <button style="padding:0.45rem 1rem; font-size:0.8rem;">Subscribe</button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero__content">
+      <p class="hero__meta">June 5, 1924 &mdash; Vol. XII, Issue 44</p>
+      <h1 class="hero__title">The <span>Age</span> of the<br>Mechanical Mind</h1>
+      <p class="hero__excerpt">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit —
+        a dispatch from the frontier of the extraordinary.
+      </p>
+      <a href="#">Continue reading &rarr;</a>
+    </div>
+    <div class="hero__image">
+      <span>Fig. I &mdash; The great machine, 1923</span>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ARTICLES -->
+  <section class="articles">
+
+    <article class="card card--lead">
+      <p class="card__tag">World Affairs</p>
+      <h2 class="card__title">Nations Convene Over Automated Correspondence</h2>
+      <p class="card__body">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim
+        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.
+      </p>
+      <div class="card__footer">
+        <span>By A. Pemberton</span><span>&mdash;</span><span>8 min read</span>
+      </div>
+    </article>
+
+    <article class="card">
+      <p class="card__tag">Science</p>
+      <h2 class="card__title">The Ether Wave Reaches Distant Shores</h2>
+      <p class="card__body">
+        Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit,
+        sed quia consequuntur magni dolores.
+      </p>
+      <div class="card__footer"><span>By C. Holloway</span></div>
+    </article>
+
+    <article class="card">
+      <p class="card__tag">Culture</p>
+      <h2 class="card__title">On the Virtues of the Printed Page</h2>
+      <p class="card__body">
+        Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam
+        nihil molestiae consequatur.
+      </p>
+      <div class="card__footer"><span>Opinion</span></div>
+    </article>
+
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div>
+      <p class="footer__brand">The Press</p>
+      <p class="footer__note">Est. 1889 &mdash; Printed daily</p>
+    </div>
+    <p class="footer__copy">
+      &copy; 1924 The Press Publishing Co.<br>All rights reserved.
+    </p>
+  </footer>
+
+</body>
+</html>
