@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Maze</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue: #3D6EF3;
+    --blue-deep: #2E58D8;
+    --blue-light: #6C93FF;
+    --orange: #FF5A1F;
+    --orange-dark: #E14A14;
+    --white: #FFFFFF;
+    --ink: #10193A;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    min-height:100vh;
+    background: var(--blue);
+    font-family: 'Inter', sans-serif;
+    color: var(--white);
+    overflow-x:hidden;
+  }
+
+  /* ---------- background decoration ---------- */
+  .bg-decor{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  .dots{
+    position:absolute;
+    width:340px;
+    height:340px;
+    background-image: radial-gradient(rgba(255,255,255,0.35) 2px, transparent 2px);
+    background-size: 28px 28px;
+    opacity:0.5;
+  }
+  .dots.tl{ top:-20px; left:-20px; }
+  .dots.br{ bottom:-20px; right:-20px; }
+  .circle{
+    position:absolute;
+    border-radius:50%;
+    background: var(--blue-light);
+    opacity:0.35;
+  }
+  .circle.c1{ width:260px; height:260px; top:-90px; right:8%; }
+  .circle.c2{ width:60px; height:60px; bottom:14%; left:6%; opacity:0.5; }
+  .circle.c3{ width:18px; height:18px; top:20%; right:14%; opacity:0.6; }
+  .ring{
+    position:absolute;
+    border-radius:50%;
+    border:1.5px solid rgba(255,255,255,0.25);
+  }
+  .ring.r1{ width:180px; height:180px; bottom:-60px; left:-40px; }
+  .ring.r2{ width:120px; height:120px; bottom:0; left:30px; }
+
+  /* ---------- layout ---------- */
+  header, main, footer{
+    position:relative;
+    z-index:1;
+  }
+
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding: 28px 6vw 0;
+  }
+  .logo{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:1.15rem;
+    letter-spacing:0.02em;
+  }
+  .logo span{ color: var(--orange); }
+  .course-tag{
+    font-size:0.75rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color: rgba(255,255,255,0.65);
+  }
+
+  main.hero{
+    max-width:760px;
+    margin:0 auto;
+    padding: 8vh 6vw 4vh;
+    text-align:center;
+  }
+
+  .eyebrow{
+    font-size:0.8rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color: rgba(255,255,255,0.7);
+    margin:0 0 18px;
+  }
+
+  h1{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:800;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    line-height:1.05;
+    margin:0 0 22px;
+  }
+  h1 .accent{ color: var(--orange); }
+
+  .pitch{
+    font-size:1.05rem;
+    line-height:1.65;
+    color: rgba(255,255,255,0.88);
+    max-width:520px;
+    margin: 0 auto 6vh;
+  }
+
+  /* ---------- the goose stage ---------- */
+  .stage{
+    position:relative;
+    width:260px;
+    height:260px;
+    margin: 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .goose{
+    width:170px;
+    height:auto;
+    cursor:pointer;
+    user-select:none;
+    -webkit-user-drag:none;
+    animation: bob 3.2s ease-in-out infinite;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    will-change: transform, opacity;
+  }
+  .goose.fled{
+    opacity:0;
+    transform: scale(0.6);
+    pointer-events:none;
+  }
+
+  @keyframes bob{
+    0%, 100%{ transform: translateY(0); }
+    50%{ transform: translateY(-8px); }
+  }
+
+  .cta{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%) scale(0.7);
+    opacity:0;
+    pointer-events:none;
+    border:none;
+    background: var(--orange);
+    color:#fff;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:1.05rem;
+    padding: 18px 36px;
+    border-radius:999px;
+    cursor:pointer;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), opacity 0.35s ease, background 0.15s ease;
+  }
+  .cta.visible{
+    opacity:1;
+    pointer-events:auto;
+    transform: translate(-50%,-50%) scale(1);
+  }
+  .cta:hover{ background: var(--orange-dark); }
+  .cta:focus-visible{
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+  }
+
+  .hint{
+    font-size:0.85rem;
+    color: rgba(255,255,255,0.6);
+    margin-top: 4vh;
+    min-height:1.2em;
+  }
+
+  .particle{
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background: rgba(255,255,255,0.85);
+    pointer-events:none;
+  }
+
+  footer{
+    text-align:center;
+    padding: 6vh 6vw 5vh;
+    font-size:0.8rem;
+    color: rgba(255,255,255,0.55);
+  }
+
+  @media (max-width: 480px){
+    .stage{ width:220px; height:220px; }
+    .goose{ width:140px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .goose{ animation:none; }
+    .cta{ transition: opacity 0.2s ease; }
+    .cta.visible{ transform: translate(-50%,-50%) scale(1); }
+  }
+</style>
+</head>
+<body>
+
+  <div class="bg-decor">
+    <div class="dots tl"></div>
+    <div class="dots br"></div>
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
+    <div class="circle c3"></div>
+    <div class="ring r1"></div>
+    <div class="ring r2"></div>
+  </div>
+
+  <header>
+    <div class="logo">THE <span>MAZE</span></div>
+    <div class="course-tag">Webprogramming SoSe 26</div>
+  </header>
+
+  <main class="hero">
+    <p class="eyebrow">A website that doesn't want to be finished</p>
+    <h1>Somewhere in here<br>is a <span class="accent">goose</span>.</h1>
+    <p class="pitch">
+      Click it, and you win. That's the whole rulebook. What it doesn't tell you is
+      how many pages you'll wander through first, or how many buttons are lying
+      to you along the way. Every subpage looks and behaves a little differently —
+      some are honest, most are not.
+    </p>
+
+    <div class="stage">
+      <img id="goose" class="goose" src="assets/goose.png" alt="A hand-drawn white goose, standing and looking sideways">
+      <button id="cta" class="cta" type="button">Start the maze</button>
+    </div>
+
+    <p class="hint" id="hint">go on, try to click it</p>
+  </main>
+
+  <footer>
+    Nothing on this page is guaranteed to stay where you left it.
+  </footer>
+
+<script>
+  const goose = document.getElementById('goose');
+  const cta = document.getElementById('cta');
+  const stage = document.querySelector('.stage');
+  const hint = document.getElementById('hint');
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FLEE_RADIUS = 90;
+  let fled = false;
+
+  function spawnDust(cx, cy){
+    if (prefersReducedMotion) return;
+    const count = 10;
+    for (let i = 0; i < count; i++){
+      const p = document.createElement('span');
+      p.className = 'particle';
+      const angle = (Math.PI * 2 * i) / count + Math.random() * 0.4;
+      const dist = 50 + Math.random() * 40;
+      const dx = Math.cos(angle) * dist;
+      const dy = Math.sin(angle) * dist;
+      p.style.left = cx + 'px';
+      p.style.top = cy + 'px';
+      stage.appendChild(p);
+
+      const anim = p.animate([
+        { transform: 'translate(-50%,-50%) scale(1)', opacity: 1 },
+        { transform: `translate(${dx - 4}px, ${dy - 4}px) scale(0.2)`, opacity: 0 }
+      ], {
+        duration: 480 + Math.random() * 200,
+        easing: 'cubic-bezier(.25,.8,.4,1)'
+      });
+      anim.onfinish = () => p.remove();
+    }
+  }
+
+  function fleeGoose(){
+    if (fled) return;
+    fled = true;
+
+    const stageRect = stage.getBoundingClientRect();
+    const gooseRect = goose.getBoundingClientRect();
+    const cx = gooseRect.left + gooseRect.width / 2 - stageRect.left;
+    const cy = gooseRect.top + gooseRect.height / 2 - stageRect.top;
+
+    goose.classList.add('fled');
+    spawnDust(cx, cy);
+    hint.textContent = '';
+
+    setTimeout(() => {
+      cta.classList.add('visible');
+    }, 160);
+  }
+
+  function handlePointer(x, y){
+    if (fled) return;
+    const r = goose.getBoundingClientRect();
+    const gx = r.left + r.width / 2;
+    const gy = r.top + r.height / 2;
+    const dist = Math.hypot(x - gx, y - gy);
+    if (dist < FLEE_RADIUS) fleeGoose();
+  }
+
+  document.addEventListener('mousemove', (e) => handlePointer(e.clientX, e.clientY));
+  goose.addEventListener('click', fleeGoose);
+
+  cta.addEventListener('click', () => {
+    // TODO: point this at the first subpage of the maze once it exists
+    window.location.href = 'maze/start.html';
+  });
+</script>
+
+</body>
+</html>
